@@ -1,5 +1,3 @@
-// main.js
-
 let selectedFiles = [];
 
 // 初期化
@@ -131,11 +129,14 @@ uploadBtn.addEventListener("click", async () => {
 
     if (!response.ok) throw new Error("アップロード失敗");
 
+    const templateFile = selectedFiles.find(f => f.name.toLowerCase().endsWith(".xlsx"));
+    const templateFilename = templateFile ? templateFile.name.split(".")[0] : "timesheet";
+
     const blob = await response.blob();
     const url = window.URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = "timesheet.xlsx";
+    a.download = `${templateFilename}_${eid}.xlsx`;
     a.click();
     window.URL.revokeObjectURL(url);
   } catch (err) {
