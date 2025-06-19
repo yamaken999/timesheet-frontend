@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <title>タイムシート作成ツール</title>
+</head>
+<body>
+  <h1>CSVアップロードでタイムシート作成</h1>
+  <input type="file" id="csvFile" />
+  <button onclick="uploadCSV()">アップロード</button>
+  <script>
+    async function uploadCSV() {
+      const fileInput = document.getElementById('csvFile');
+      if (!fileInput.files.length) return alert("ファイルを選択してください");
+      const formData = new FormData();
+      formData.append("file", fileInput.files[0]);
+      const res = await fetch("https://timesheet-api-un72.onrender.com/upload", {
+        method: "POST",
+        body: formData
+      });
+      if (res.ok) {
+        const blob = await res.blob();
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "timesheet.xlsx";
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+      } else {
+        alert("アップロード失敗");
+      }
+    }
+  </script>
+</body>
+</html>
