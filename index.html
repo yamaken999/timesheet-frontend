@@ -6,12 +6,39 @@
 </head>
 <body>
   <h1>CSVアップロードでタイムシート作成</h1>
-  <input type="file" id="csvFile" />
+
+  <label>氏名: <input type="text" id="name" /></label><br />
+  <label>対象年: <input type="text" id="year" /></label><br />
+  <label>対象月: <input type="text" id="month" /></label><br />
+  <label>作業内容: <input type="text" id="task" /></label><br />
+  <input type="file" id="csvFile" /><br />
   <button onclick="uploadCSV()">アップロード</button>
+
   <script>
+    // 前回入力値の読み込み
+    window.onload = () => {
+      const saved = localStorage.getItem("lastInputs");
+      if (saved) {
+        const values = JSON.parse(saved);
+        document.getElementById("name").value = values.name || "";
+        document.getElementById("year").value = values.year || "";
+        document.getElementById("month").value = values.month || "";
+        document.getElementById("task").value = values.task || "";
+      }
+    };
+
     async function uploadCSV() {
+      const name = document.getElementById("name").value;
+      const year = document.getElementById("year").value;
+      const month = document.getElementById("month").value;
+      const task = document.getElementById("task").value;
+
+      // 入力値を保存
+      localStorage.setItem("lastInputs", JSON.stringify({ name, year, month, task }));
+
       const fileInput = document.getElementById('csvFile');
       if (!fileInput.files.length) return alert("ファイルを選択してください");
+
       const formData = new FormData();
       formData.append("file", fileInput.files[0]);
       const res = await fetch("https://timesheet-api-un72.onrender.com/upload", {
