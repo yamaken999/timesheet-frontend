@@ -20,11 +20,14 @@
       margin-top: 10px;
       font-weight: bold;
     }
-    input[type="text"],
-    select {
+    input[type="text"], select {
       width: 100%;
       padding: 6px;
       margin-top: 4px;
+    }
+    small {
+      color: #666;
+      font-weight: normal;
     }
     #dropZone {
       border: 2px dashed #999;
@@ -66,6 +69,14 @@
       border-radius: 4px;
       margin: 5px;
     }
+    .remove-button {
+      background-color: #dc3545;
+      font-size: 12px;
+      padding: 4px 10px;
+    }
+    .remove-button:hover {
+      background-color: #b02a37;
+    }
     ul {
       list-style: none;
       padding: 0;
@@ -84,6 +95,10 @@
   <h1>タイムシート作成ツール</h1>
 
   <label>氏名: <input type="text" id="name" /></label>
+  <small>※ Excelの氏名</small>
+  <label>EID: <input type="text" id="eid" /></label>
+  <small>※ 出力ファイル名</small>
+
   <label>対象年: 
     <select id="year">
       <option value="">-- 年を選択 --</option>
@@ -116,7 +131,7 @@
 
     window.onload = () => {
       const now = new Date();
-      now.setMonth(now.getMonth() - 1); // 前月
+      now.setMonth(now.getMonth() - 1);
       const defaultYear = now.getFullYear();
       const defaultMonth = (now.getMonth() + 1).toString().padStart(2, '0');
 
@@ -144,6 +159,7 @@
       if (saved) {
         const values = JSON.parse(saved);
         document.getElementById("name").value = values.name || "";
+        document.getElementById("eid").value = values.eid || "";
         if (values.year) document.getElementById("year").value = values.year;
         if (values.month) document.getElementById("month").value = values.month;
         document.getElementById("task").value = values.task || "";
@@ -161,6 +177,7 @@
         li.textContent = file.name;
         const removeBtn = document.createElement("button");
         removeBtn.textContent = "削除";
+        removeBtn.className = "remove-button";
         removeBtn.onclick = () => {
           droppedFiles.splice(index, 1);
           updateFileList();
@@ -169,21 +186,6 @@
         list.appendChild(li);
       });
     }
-
-    const dropZone = document.getElementById("dropZone");
-    dropZone.addEventListener("dragover", (e) => {
-      e.preventDefault();
-      dropZone.classList.add("dragover");
-    });
-    dropZone.addEventListener("dragleave", () => {
-      dropZone.classList.remove("dragover");
-    });
-    dropZone.addEventListener("drop", (e) => {
-      e.preventDefault();
-      dropZone.classList.remove("dragover");
-      droppedFiles = droppedFiles.concat(Array.from(e.dataTransfer.files));
-      updateFileList();
-    });
 
     function triggerFileInput() {
       document.getElementById("fileInput").click();
@@ -196,12 +198,13 @@
 
     async function uploadFiles() {
       const name = document.getElementById("name").value;
+      const eid = document.getElementById("eid").value;
       const year = document.getElementById("year").value;
       const month = document.getElementById("month").value;
       const task = document.getElementById("task").value;
       const president = document.querySelector("input[name='president']:checked").value;
 
-      localStorage.setItem("lastInputs", JSON.stringify({ name, year, month, task, president }));
+      localStorage.setItem("lastInputs", JSON.stringify({ name, eid, year, month, task, president }));
 
       if (droppedFiles.length < 3) return alert("CSV2つとExcelテンプレートを指定してください。");
 
@@ -210,6 +213,7 @@
         formData.append("files", file);
       });
       formData.append("name", name);
+      formData.append("eid", eid);
       formData.append("year", year);
       formData.append("month", month);
       formData.append("task", task);
