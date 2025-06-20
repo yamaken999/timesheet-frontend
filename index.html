@@ -5,6 +5,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>タイムシート作成</title>
   <link rel="stylesheet" href="style.css" />
+  <link rel="icon" type="image/png" href="assets/favicon.png" />
+  <style>
+    .corner-link {
+      position: fixed;
+      bottom: 10px;
+      right: 10px;
+      font-size: 0.9em;
+    }
+  </style>
 </head>
 <body>
   <h1>タイムシート作成</h1>
@@ -38,6 +47,10 @@
   <div class="button-area">
     <button id="uploadBtn" class="btn-generate">タイムシート作成</button>
     <span id="loadingMsg" style="display:none;">⏳ 作成中...</span>
+  </div>
+
+  <div class="corner-link">
+    <a href="/holidays-ui" target="_blank">祝日メンテナンス</a>
   </div>
 
   <script src="main.js"></script>
