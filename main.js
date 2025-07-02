@@ -81,7 +81,7 @@ function populateYearMonth() {
 
 // 入力値の保存と復元
 function loadFromLocalStorage() {
-  ["name", "eid", "year", "month", "task"].forEach(id => {
+  ["name", "eid", "organization", "year", "month", "task"].forEach(id => {
     const val = localStorage.getItem(id);
     if (val) document.getElementById(id).value = val;
   });
@@ -89,7 +89,7 @@ function loadFromLocalStorage() {
   if (pres) document.querySelector(`input[name="president"][value="${pres}"]`).checked = true;
 }
 function saveToLocalStorage() {
-  ["name", "eid", "year", "month", "task"].forEach(id => {
+  ["name", "eid", "organization", "year", "month", "task"].forEach(id => {
     localStorage.setItem(id, document.getElementById(id).value);
   });
   const pres = document.querySelector('input[name="president"]:checked')?.value;
@@ -107,6 +107,7 @@ uploadBtn.addEventListener("click", async () => {
 
   const name = document.getElementById("name").value;
   const eid = document.getElementById("eid").value;
+  const organization = document.getElementById("organization").value;
   const year = document.getElementById("year").value;
   const month = document.getElementById("month").value;
   const task = document.getElementById("task").value;
@@ -116,6 +117,7 @@ uploadBtn.addEventListener("click", async () => {
   selectedFiles.forEach(file => formData.append("files", file));
   formData.append("name", name);
   formData.append("eid", eid);
+  formData.append("organization", organization);
   formData.append("year", year);
   formData.append("month", month);
   formData.append("task", task);
