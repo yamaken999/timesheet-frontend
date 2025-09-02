@@ -129,7 +129,13 @@ uploadBtn.addEventListener("click", async () => {
   formData.append("president", president);
 
   try {
-    const response = await fetch("https://timesheet-api-un72.onrender.com/upload", {
+    // 環境に応じてAPIエンドポイントを自動判定
+    const isProduction = window.location.hostname === 'yamaken999.github.io';
+    const apiEndpoint = isProduction 
+      ? "https://timesheet-api-prod.azurewebsites.net/upload"  // Azure本番環境
+      : "http://localhost:10000/upload";  // ローカル開発環境
+    
+    const response = await fetch(apiEndpoint, {
       method: "POST",
       body: formData
     });
