@@ -7,15 +7,15 @@ window.onload = () => {
   loadFromLocalStorage();
 };
 
-// ファイル選択時に追加
+// ファイル選択時に追加（CSVファイルのみ）
 const fileInput = document.getElementById("fileInput");
 fileInput.addEventListener("change", (e) => {
-  const newFiles = Array.from(e.target.files);
+  const newFiles = Array.from(e.target.files).filter(f => f.name.toLowerCase().endsWith(".csv"));
   selectedFiles = selectedFiles.concat(newFiles);
   updateFileList();
 });
 
-// ドラッグ＆ドロップでファイル追加
+// ドラッグ＆ドロップでファイル追加（CSVファイルのみ）
 const dropZone = document.getElementById("dropZone");
 dropZone.addEventListener("dragover", (e) => {
   e.preventDefault();
@@ -27,7 +27,7 @@ dropZone.addEventListener("dragleave", () => {
 dropZone.addEventListener("drop", (e) => {
   e.preventDefault();
   dropZone.classList.remove("dragover");
-  const newFiles = Array.from(e.dataTransfer.files);
+  const newFiles = Array.from(e.dataTransfer.files).filter(f => f.name.toLowerCase().endsWith(".csv"));
   selectedFiles = selectedFiles.concat(newFiles);
   updateFileList();
 });
@@ -81,7 +81,7 @@ function populateYearMonth() {
 
 // 入力値の保存と復元
 function loadFromLocalStorage() {
-  ["name", "eid", "organization", "year", "month", "task"].forEach(id => {
+  ["name", "eid", "organization", "task"].forEach(id => {
     const val = localStorage.getItem(id);
     if (val) document.getElementById(id).value = val;
   });
@@ -89,7 +89,7 @@ function loadFromLocalStorage() {
   if (pres) document.querySelector(`input[name="president"][value="${pres}"]`).checked = true;
 }
 function saveToLocalStorage() {
-  ["name", "eid", "organization", "year", "month", "task"].forEach(id => {
+  ["name", "eid", "organization", "task"].forEach(id => {
     localStorage.setItem(id, document.getElementById(id).value);
   });
   const pres = document.querySelector('input[name="president"]:checked')?.value;
@@ -99,7 +99,12 @@ function saveToLocalStorage() {
 // アップロード処理
 const uploadBtn = document.getElementById("uploadBtn");
 uploadBtn.addEventListener("click", async () => {
-  if (selectedFiles.length === 0) return;
+  // CSVファイル2個の検証
+  const csvFiles = selectedFiles.filter(f => f.name.toLowerCase().endsWith(".csv"));
+  if (csvFiles.length !== 2) {
+    alert("CSVファイルを2個選択してください");
+    return;
+  }
 
   saveToLocalStorage();
   uploadBtn.disabled = true;
@@ -114,7 +119,7 @@ uploadBtn.addEventListener("click", async () => {
   const president = document.querySelector('input[name="president"]:checked')?.value;
 
   const formData = new FormData();
-  selectedFiles.forEach(file => formData.append("files", file));
+  csvFiles.forEach(file => formData.append("files", file));
   formData.append("name", name);
   formData.append("eid", eid);
   formData.append("organization", organization);
@@ -131,14 +136,22 @@ uploadBtn.addEventListener("click", async () => {
 
     if (!response.ok) throw new Error("アップロード失敗");
 
-    const templateFile = selectedFiles.find(f => f.name.toLowerCase().endsWith(".xlsx"));
-    const templateFilename = templateFile ? templateFile.name.split(".")[0] : "timesheet";
+    // サーバーからのレスポンスヘッダーからファイル名を取得
+    const contentDisposition = response.headers.get('content-disposition');
+    let filename = `タイムシート(${year}_${month.padStart(2, '0')})_${eid}.xlsx`;
+    
+    if (contentDisposition) {
+      const filenameMatch = contentDisposition.match(/filename="(.+)"/);
+      if (filenameMatch) {
+        filename = filenameMatch[1];
+      }
+    }
 
     const blob = await response.blob();
     const url = window.URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = `${templateFilename}_${eid}.xlsx`;
+    a.download = filename;
     a.click();
     window.URL.revokeObjectURL(url);
   } catch (err) {
