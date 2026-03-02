@@ -16,7 +16,7 @@ label {
   margin-top: 10px;
   font-weight: bold;
 }
-input[type="text"], select {
+input[type="text"], select, input[type="number"] {
   width: 100%;
   padding: 6px;
   margin-top: 4px;
@@ -39,6 +39,40 @@ small {
 }
 .radio-group {
   margin-top: 10px;
+}
+fieldset {
+  border: 1px solid #ccc;
+  padding: 15px;
+  margin-top: 10px;
+  border-radius: 4px;
+  background-color: #fafafa;
+}
+legend {
+  font-weight: bold;
+  padding: 0 10px;
+  color: #333;
+}
+fieldset label {
+  display: inline-block;
+  margin-right: 20px;
+  margin-top: 5px;
+  margin-bottom: 5px;
+}
+fieldset input[type="radio"] {
+  margin-right: 5px;
+  margin-top: 0;
+}
+fieldset input[type="number"],
+fieldset input[type="time"] {
+  width: 120px;
+  display: inline-block;
+  margin: 0 5px;
+}
+.btn-add {
+  background-color: #0066cc;
+}
+.btn-add:hover {
+  background-color: #0052a3;
 }
 .button-area {
   text-align: center;

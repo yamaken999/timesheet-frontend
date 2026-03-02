@@ -36,8 +36,26 @@
   <label>作業内容: <input type="text" id="task" /></label>
 
   <div class="radio-group">
-    <label><input type="radio" name="president" value="off" checked /> 通常モード</label>
-    <label><input type="radio" name="president" value="on" /> 社長モード</label>
+    <fieldset>
+      <legend>就業時間設定</legend>
+      <label><input type="radio" name="time_mode" value="none" checked /> なし</label>
+      <label>
+        <input type="radio" name="time_mode" value="ratio" /> 割合モード
+        <input type="number" id="ratioPercent" name="ratio_percent" min="0" max="100" step="0.1" placeholder="例: 60" disabled />%
+      </label>
+      <label>
+        <input type="radio" name="time_mode" value="fixed" /> 固定時間モード
+        <input type="time" id="fixedHours" name="fixed_hours" disabled />
+      </label>
+    </fieldset>
+  </div>
+
+  <div id="additionalBreaksContainer">
+    <fieldset>
+      <legend>追加の休憩時間</legend>
+      <button type="button" id="addBreakBtn" class="btn-add">休憩時間追加</button>
+      <ul id="breaksList"></ul>
+    </fieldset>
   </div>
 
   <div id="dropZone">
