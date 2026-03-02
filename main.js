@@ -297,13 +297,13 @@ uploadBtn.addEventListener("click", async () => {
     }
       if (hostname.includes('gray-grass-06e4f8300-1.eastasia.2.azurestaticapps.net')) {
         // ステージング環境（PRプレビュー）
-        apiEndpoint = "https://timesheet-api-func.azurewebsites.net/api/upload";
+        apiEndpoint = "https://timesheet-api-func-free.azurewebsites.net/api/upload";
       } else if (hostname.includes('gray-grass-06e4f8300') || hostname.includes('azurestaticapps.net')) {
         // 本番環境（Azure Static Web Apps）- Functions に移行
-        apiEndpoint = "https://timesheet-api-func.azurewebsites.net/api/upload";
+        apiEndpoint = "https://timesheet-api-func-free.azurewebsites.net/api/upload";
       } else if (hostname === 'yamaken999.github.io') {
         // GitHub Pages - Functions に移行
-        apiEndpoint = "https://timesheet-api-func.azurewebsites.net/api/upload";
+        apiEndpoint = "https://timesheet-api-func-free.azurewebsites.net/api/upload";
       } else {
         // ローカル開発環境
         apiEndpoint = "http://localhost:10000/upload";
